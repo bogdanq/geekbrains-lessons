@@ -1,0 +1,21 @@
+# dependencies
+/chat/node_modules
+/chat/.pnp
+/chat/.pnp.js
+
+# testing
+/chat/coverage
+
+# production
+/chat/build
+
+# misc
+/chat.DS_Store
+/chat.env.local
+/chat.env.development.local
+/chat.env.test.local
+/chat.env.production.local
+
+/chatnpm-debug.log*
+/chatyarn-debug.log*
+/chatyarn-error.log*
