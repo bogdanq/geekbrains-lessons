@@ -1,5 +1,6 @@
 import { Component } from "react";
 import PropTypes from "prop-types";
+import { format } from "date-fns";
 import {
   ListItem,
   ListItemIcon,
@@ -22,13 +23,15 @@ const StyledListItem = withStyles((theme) => ({
 
 export class Chat extends Component {
   static propTypes = {
-    title: PropTypes.string.isRequired,
     selected: PropTypes.bool.isRequired,
-    handleListItemClick: PropTypes.func.isRequired,
   };
 
   render() {
-    const { handleListItemClick, selected, title } = this.props;
+    const { handleListItemClick, selected, chat } = this.props;
+    const { lastMessage, title } = chat;
+    const time = lastMessage?.createdTs
+      ? format(lastMessage.createdTs, "HH:mm:ss")
+      : null;
 
     return (
       <StyledListItem button selected={selected} onClick={handleListItemClick}>
@@ -37,7 +40,15 @@ export class Chat extends Component {
         </ListItemIcon>
         <div className={styles.description}>
           <ListItemText className={styles.text} primary={title} />
-          <ListItemText className={styles.text} primary="12.30" />
+          {lastMessage ? (
+            <ListItemText
+              className={styles.text}
+              primary={`${lastMessage.author}: ${lastMessage.message}`}
+            />
+          ) : (
+            <ListItemText className={styles.text} primary="Нет сообщений" />
+          )}
+          <ListItemText className={styles.text} primary={time} />
         </div>
       </StyledListItem>
     );

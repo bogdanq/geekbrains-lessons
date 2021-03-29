@@ -1,29 +1,23 @@
 import { Component } from "react";
 import { List } from "@material-ui/core";
+import { Link } from "react-router-dom";
 import { Chat } from "./chat";
 
 export class ChatList extends Component {
-  state = {
-    selectedIndex: 0,
-    chats: ["room1", "room2", "room3"],
-  };
-
-  handleListItemClick = (index) => {
-    this.setState({ selectedIndex: index });
-  };
-
   render() {
-    const { selectedIndex, chats } = this.state;
+    const {
+      conversations,
+      match: { params },
+    } = this.props;
+
+    const chatId = params.id;
 
     return (
       <List component="nav">
-        {chats.map((chat, index) => (
-          <Chat
-            key={chat}
-            title={chat}
-            selected={selectedIndex === index}
-            handleListItemClick={() => this.handleListItemClick(index)}
-          />
+        {conversations.map((chat) => (
+          <Link key={chat.title} to={`/chat/${chat.title}`}>
+            <Chat selected={chat.title === chatId} chat={chat} />
+          </Link>
         ))}
       </List>
     );

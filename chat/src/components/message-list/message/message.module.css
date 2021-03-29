@@ -1,12 +1,17 @@
+.wrapper {
+  display: flex;
+}
+
 .message {
   border-radius: 10px;
   background-color: #182533;
   color: #fff;
   padding: 10px;
-  width: 45%;
   margin: auto 0 10px 0;
   font-size: 14px;
   line-height: 1.5;
+  max-width: 45%;
+  min-width: 150px;
 }
 
 .currentMessage {

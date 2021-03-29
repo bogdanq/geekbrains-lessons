@@ -4,6 +4,7 @@ import { InputAdornment, Input, withStyles } from "@material-ui/core";
 import { Send } from "@material-ui/icons";
 import { Message } from "./message";
 import styles from "./message-list.module.css";
+import { MessagesNotFound } from "./messages-not-found";
 
 const StyledInput = withStyles((theme) => ({
   root: {
@@ -15,54 +16,22 @@ const StyledInput = withStyles((theme) => ({
   },
 }))(Input);
 export class MessageList extends Component {
-  state = {
-    messages: [
-      { author: "User", value: "Привет" },
-      { author: "User", value: "Привет" },
-    ],
-    value: "",
-  };
-
   ref = createRef();
 
-  componentDidUpdate(_, state) {
-    const { messages } = this.state;
-
-    const lastMessage = messages[messages.length - 1];
-
-    if (lastMessage.author === "User" && state.messages !== messages) {
-      setTimeout(() => {
-        this.sendMessage({ author: "bot", value: "Как дела ?" });
-      }, 500);
-    }
-  }
-
-  sendMessage = ({ author, value }) => {
-    const { messages } = this.state;
-
-    if (!value) {
-      return;
-    }
-
-    this.setState(
-      {
-        messages: [...messages, { author, value }],
-        value: "",
-      },
-      this.handleScrollBottom
-    );
-  };
-
   handleChangeInput = ({ target }) => {
-    this.setState({
-      value: target.value,
-    });
+    this.props.handleChangeValue(target.value);
   };
 
   handlePressInput = ({ code }) => {
     if (code === "Enter") {
-      this.sendMessage({ author: "User", value: this.state.value });
+      this.handleSendMessage();
     }
+  };
+
+  handleSendMessage = () => {
+    const { sendMessage, value } = this.props;
+
+    sendMessage({ author: "User", message: value });
   };
 
   handleScrollBottom = () => {
@@ -71,15 +40,23 @@ export class MessageList extends Component {
     }
   };
 
+  componentDidUpdate() {
+    this.handleScrollBottom();
+  }
+
   render() {
-    const { messages, value } = this.state;
+    const { messages, value } = this.props;
 
     return (
       <>
         <div ref={this.ref}>
-          {messages.map((message, index) => (
-            <Message message={message} key={index} />
-          ))}
+          {!messages.length ? (
+            <MessagesNotFound />
+          ) : (
+            messages.map((message, index) => (
+              <Message message={message} key={index} />
+            ))
+          )}
         </div>
 
         <StyledInput
@@ -93,7 +70,7 @@ export class MessageList extends Component {
               {value && (
                 <Send
                   className={classnames(styles.icon)}
-                  onClick={() => this.sendMessage({ author: "User", value })}
+                  onClick={this.handleSendMessage}
                 />
               )}
             </InputAdornment>
